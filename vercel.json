@@ -16,14 +16,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api"
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
       "dest": "/frontend"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
