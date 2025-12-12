@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .vite/
+.env
 
 # Logs
 npm-debug.log*
@@ -22,3 +23,12 @@ Thumbs.db
 # Pacotes lock (opcional, se não quiser versionar)
 package-lock.json
 yarn.lock
+
+# Build output do frontend
+frontend/dist/
+frontend/.vite/
+
+# Backend temporários ou arquivos de configuração local
+api/.env
+api/node_modules/
+api/package-lock.json
