@@ -3,13 +3,30 @@ import Editor from "@monaco-editor/react";
 
 export default function App() {
   const [tab, setTab] = useState("code");
+  const [code, setCode] = useState(`<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial;
+        background: #0f172a;
+        color: white;
+        padding: 20px;
+      }
+      h1 { color: #38bdf8; }
+    </style>
+  </head>
+  <body>
+    <h1>Hello Code Fácil 🚀</h1>
+    <p>Edite o código e veja o preview.</p>
+  </body>
+</html>`);
+
   const [messages, setMessages] = useState([
     { role: "ai", text: "Olá, eu sou o André. Como posso te ajudar hoje?" }
   ]);
+
   const [input, setInput] = useState("");
-  const [code, setCode] = useState(`function hello() {
-  console.log("Hello, Code Fácil 🚀");
-}`);
 
   function sendMessage() {
     if (!input.trim()) return;
@@ -19,7 +36,6 @@ export default function App() {
 
   return (
     <div style={styles.app}>
-      
       {/* CHAT */}
       <div style={styles.chat}>
         <div style={styles.chatHeader}>🤖 André • IA Developer</div>
@@ -73,21 +89,21 @@ export default function App() {
           {tab === "code" ? (
             <Editor
               height="100%"
-              defaultLanguage="javascript"
-              theme="vs-dark"
+              defaultLanguage="html"
               value={code}
-              onChange={(value) => setCode(value)}
+              onChange={value => setCode(value)}
+              theme="vs-dark"
               options={{
                 fontSize: 14,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false
+                minimap: { enabled: false }
               }}
             />
           ) : (
-            <div style={styles.preview}>
-              <h1>🚀 Preview</h1>
-              <p>Resultado da aplicação aparecerá aqui.</p>
-            </div>
+            <iframe
+              title="preview"
+              style={styles.preview}
+              srcDoc={code}
+            />
           )}
         </div>
       </div>
@@ -129,7 +145,7 @@ const styles = {
 
   message: {
     padding: "10px 12px",
-    borderRadius: "8px",
+    borderRadius: "10px",
     maxWidth: "85%",
     fontSize: "14px"
   },
@@ -137,26 +153,25 @@ const styles = {
   chatInput: {
     display: "flex",
     padding: "10px",
-    borderTop: "1px solid #1f2937"
+    borderTop: "1px solid #1f2937",
+    gap: "6px"
   },
 
   input: {
     flex: 1,
     background: "#020617",
     border: "1px solid #1f2937",
-    borderRadius: "6px",
+    color: "white",
     padding: "8px",
-    color: "#e5e7eb",
-    outline: "none"
+    borderRadius: "6px"
   },
 
   sendBtn: {
-    marginLeft: "8px",
     background: "#2563eb",
     border: "none",
-    borderRadius: "6px",
+    color: "white",
     padding: "0 14px",
-    color: "#fff",
+    borderRadius: "6px",
     cursor: "pointer"
   },
 
@@ -168,32 +183,33 @@ const styles = {
 
   tabs: {
     display: "flex",
-    borderBottom: "1px solid #1f2937",
-    background: "#020617"
+    borderBottom: "1px solid #1f2937"
   },
 
   tab: {
     padding: "10px 16px",
     background: "transparent",
-    border: "none",
     color: "#9ca3af",
+    border: "none",
     cursor: "pointer"
   },
 
   tabActive: {
     padding: "10px 16px",
     background: "#020617",
-    borderBottom: "2px solid #2563eb",
-    color: "#fff",
+    color: "white",
+    borderBottom: "2px solid #38bdf8",
     cursor: "pointer"
   },
 
   editor: {
-    flex: 1,
-    background: "#020617"
+    flex: 1
   },
 
   preview: {
-    padding: "20px"
+    width: "100%",
+    height: "100%",
+    border: "none",
+    background: "white"
   }
 };
