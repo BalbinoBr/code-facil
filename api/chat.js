@@ -1,9 +1,3 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -12,20 +6,28 @@ export default async function handler(req, res) {
   try {
     const { messages } = req.body;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-      temperature: 0.7,
+    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages,
+        temperature: 0.7,
+      }),
     });
 
+    const data = await response.json();
+
     res.status(200).json({
-      reply: completion.choices[0].message.content,
+      reply: data.choices[0].message.content,
     });
   } catch (error) {
     res.status(500).json({
-      error: "Erro ao comunicar com OpenAI",
+      error: "Erro ao comunicar com DeepSeek",
       details: error.message,
     });
   }
 }
-
