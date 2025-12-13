@@ -1,155 +1,179 @@
-import React, { useState } from 'react';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+export default function App() {
   const [messages, setMessages] = useState([
-    { id: 1, text: 'Olá! Como posso te ajudar com código hoje?', sender: 'ai' },
-    { id: 2, text: 'Preciso de uma função em JavaScript', sender: 'user' }
+    { role: "assistant", content: "Olá 👋 Me diga o que você quer construir." }
   ]);
-  
-  const [code, setCode] = useState(`// Seu código aparecerá aqui\nfunction exemplo() {\n  return "Hello, World!";\n}`);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
-  const handleSendMessage = () => {
+  function sendMessage() {
     if (!input.trim()) return;
-    
-    const newMessage = { id: Date.now(), text: input, sender: 'user' };
-    setMessages([...messages, newMessage]);
-    setInput('');
-    
-    // Simular resposta da IA
-    setTimeout(() => {
-      const aiResponse = { 
-        id: Date.now() + 1, 
-        text: `Entendi: "${input}". Aqui está uma solução:`, 
-        sender: 'ai' 
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      
-      // Atualizar código com exemplo
-      setCode(`// Resposta para: ${input}\nfunction solucao() {\n  // Código gerado automaticamente\n  console.log("Problema resolvido!");\n  return true;\n}`);
-    }, 1000);
-  };
+
+    setMessages([
+      ...messages,
+      { role: "user", content: input },
+      { role: "assistant", content: "Gerando código..." }
+    ]);
+    setInput("");
+  }
 
   return (
-    <div className="app">
-      {/* HEADER */}
-      <header className="header">
-        <div className="logo">
-          <div className="logo-icon">🤖</div>
-          <span>CodeFacil AI</span>
-        </div>
-        <div className="header-actions">
-          <button className="btn btn-primary" onClick={() => {
-            setMessages([{ id: 1, text: 'Chat reiniciado! Como posso ajudar?', sender: 'ai' }]);
-            setCode('// Novo workspace\n// Digite seu código aqui');
-          }}>
-            Novo Chat
-          </button>
-          <button className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white' }}
-            onClick={() => navigator.clipboard.writeText(code)}>
-            📋 Copiar Código
-          </button>
-        </div>
-      </header>
-      
-      {/* MAIN CONTAINER */}
-      <div className="main-container">
-        {/* CHAT SIDEBAR */}
-        <div className="chat-sidebar">
-          <div className="chat-header">
-            <h2><span>💬</span> Assistente de Código</h2>
-            <span style={{ color: '#10b981', fontSize: '0.85rem' }}>● Online</span>
-          </div>
-          
-          <div className="chat-messages">
-            {messages.map(msg => (
-              <div key={msg.id} className={`message ${msg.sender}`}>
-                <div className="message-bubble">{msg.text}</div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="chat-input">
-            <input
-              type="text"
-              placeholder="Pergunte sobre código, APIs, frameworks..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            />
-            <button className="btn btn-primary" onClick={handleSendMessage}>
-              Enviar
-            </button>
-          </div>
-        </div>
-        
-        {/* CODE WORKSPACE */}
-        <div className="code-workspace">
-          <div className="workspace-header">
-            <h2>📁 Workspace</h2>
-            <button className="btn btn-primary" onClick={() => alert('Código executado! Confira o console.')}>
-              ▶️ Executar Código
-            </button>
-          </div>
-          
-          <div className="code-tabs">
-            {['JavaScript', 'React', 'API'].map(tab => (
-              <button key={tab} className={`code-tab ${tab === 'JavaScript' ? 'active' : ''}`}>
-                {tab === 'JavaScript' ? '📘' : tab === 'React' ? '⚛️' : '🔧'} {tab}
-              </button>
-            ))}
-          </div>
-          
-          <div className="code-editor">
-            <div className="editor-header">
-              <span>index.js</span>
-              <button style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer' }}
-                onClick={() => navigator.clipboard.writeText(code)}>
-                💾 Salvar
-              </button>
+    <div style={styles.app}>
+      {/* Sidebar / Chat */}
+      <aside style={styles.sidebar}>
+        <header style={styles.header}>
+          <h2 style={styles.logo}>CodeFacil</h2>
+          <span style={styles.badge}>AI Builder</span>
+        </header>
+
+        <div style={styles.chat}>
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              style={{
+                ...styles.message,
+                alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                background:
+                  msg.role === "user" ? "#2563eb" : "#020617"
+              }}
+            >
+              {msg.content}
             </div>
-            
-            <div className="editor-content">
-              <pre contentEditable suppressContentEditableWarning 
-                onBlur={(e) => setCode(e.target.textContent)}
-                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                {code}
-              </pre>
-            </div>
-          </div>
-          
-          <div className="code-output">
-            <div className="output-header">
-              <span>📤</span>
-              <h3>Saída do Console</h3>
-            </div>
-            <pre style={{ color: '#10b981' }}>
-              {`$ node index.js\n"Hello, World!"\n✅ Código executado com sucesso!`}
-            </pre>
-          </div>
+          ))}
         </div>
-      </div>
-      
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="status">
-          <div className="status-dot"></div>
-          <span>Sistema operacional</span>
-        </div>
-        <div className="footer-info">
-          <span>CodeFacil AI v1.0 • </span>
-          <span style={{ color: '#6366f1' }}>API: /api</span>
-        </div>
-        <div className="footer-actions">
-          <button style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer' }}
-            onClick={() => alert('Configurações em breve!')}>
-            ⚙️ Configurações
+
+        <div style={styles.inputBox}>
+          <input
+            style={styles.input}
+            placeholder="Descreva o que você quer criar..."
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && sendMessage()}
+          />
+          <button style={styles.button} onClick={sendMessage}>
+            →
           </button>
         </div>
-      </footer>
+      </aside>
+
+      {/* Workspace */}
+      <main style={styles.workspace}>
+        <h1 style={styles.title}>Área de Trabalho</h1>
+
+        <div style={styles.panel}>
+          <p style={styles.placeholder}>
+            O código gerado aparecerá aqui ✨
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
 
-export default App;
+/* ===================== */
+/* 🎨 ESTILOS */
+/* ===================== */
+
+const styles = {
+  app: {
+    display: "flex",
+    height: "100vh",
+    background: "#020617",
+    color: "#e5e7eb",
+    fontFamily: "Inter, system-ui, sans-serif"
+  },
+
+  sidebar: {
+    width: 360,
+    display: "flex",
+    flexDirection: "column",
+    borderRight: "1px solid #1e293b",
+    background: "linear-gradient(180deg,#020617,#020617)"
+  },
+
+  header: {
+    padding: "16px 20px",
+    borderBottom: "1px solid #1e293b",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+
+  logo: {
+    margin: 0,
+    color: "#38bdf8"
+  },
+
+  badge: {
+    background: "#1e293b",
+    padding: "4px 10px",
+    borderRadius: 999,
+    fontSize: 12
+  },
+
+  chat: {
+    flex: 1,
+    padding: 20,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    overflowY: "auto"
+  },
+
+  message: {
+    maxWidth: "80%",
+    padding: "10px 14px",
+    borderRadius: 12,
+    fontSize: 14,
+    lineHeight: 1.4
+  },
+
+  inputBox: {
+    padding: 16,
+    display: "flex",
+    gap: 8,
+    borderTop: "1px solid #1e293b"
+  },
+
+  input: {
+    flex: 1,
+    padding: "10px 14px",
+    background: "#020617",
+    border: "1px solid #1e293b",
+    borderRadius: 10,
+    color: "#e5e7eb",
+    outline: "none"
+  },
+
+  button: {
+    width: 42,
+    borderRadius: 10,
+    border: "none",
+    background: "#2563eb",
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: 18
+  },
+
+  workspace: {
+    flex: 1,
+    padding: 32
+  },
+
+  title: {
+    marginBottom: 16,
+    fontWeight: 600
+  },
+
+  panel: {
+    height: "calc(100% - 48px)",
+    borderRadius: 12,
+    border: "1px solid #1e293b",
+    background: "#020617",
+    padding: 20
+  },
+
+  placeholder: {
+    color: "#64748b"
+  }
+};
