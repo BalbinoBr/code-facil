@@ -1,1 +1,15 @@
+import React from "react";
+
+function Workspace() {
+  return (
+    <div className="workspace-container">
+      <div className="workspace-header">🖥️ Tela de Trabalho</div>
+      <div className="workspace-content">
+        <p>Os resultados do deploy aparecerão aqui...</p>
+      </div>
+    </div>
+  );
+}
+
+export default Workspace;
 
