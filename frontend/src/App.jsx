@@ -1,5 +1,5 @@
-import Editor from "@monaco-editor/react";
 import { useState } from "react";
+import Editor from "@monaco-editor/react";
 
 export default function App() {
   const [tab, setTab] = useState("code");
@@ -7,6 +7,9 @@ export default function App() {
     { role: "ai", text: "Olá, eu sou o André. Como posso te ajudar hoje?" }
   ]);
   const [input, setInput] = useState("");
+  const [code, setCode] = useState(`function hello() {
+  console.log("Hello, Code Fácil 🚀");
+}`);
 
   function sendMessage() {
     if (!input.trim()) return;
@@ -68,11 +71,18 @@ export default function App() {
 
         <div style={styles.editor}>
           {tab === "code" ? (
-            <pre style={styles.code}>
-{`function hello() {
-  console.log("Hello, Code Fácil 🚀");
-}`}
-            </pre>
+            <Editor
+              height="100%"
+              defaultLanguage="javascript"
+              theme="vs-dark"
+              value={code}
+              onChange={(value) => setCode(value)}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false
+              }}
+            />
           ) : (
             <div style={styles.preview}>
               <h1>🚀 Preview</h1>
@@ -118,4 +128,72 @@ const styles = {
   },
 
   message: {
-    padding:
+    padding: "10px 12px",
+    borderRadius: "8px",
+    maxWidth: "85%",
+    fontSize: "14px"
+  },
+
+  chatInput: {
+    display: "flex",
+    padding: "10px",
+    borderTop: "1px solid #1f2937"
+  },
+
+  input: {
+    flex: 1,
+    background: "#020617",
+    border: "1px solid #1f2937",
+    borderRadius: "6px",
+    padding: "8px",
+    color: "#e5e7eb",
+    outline: "none"
+  },
+
+  sendBtn: {
+    marginLeft: "8px",
+    background: "#2563eb",
+    border: "none",
+    borderRadius: "6px",
+    padding: "0 14px",
+    color: "#fff",
+    cursor: "pointer"
+  },
+
+  workspace: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column"
+  },
+
+  tabs: {
+    display: "flex",
+    borderBottom: "1px solid #1f2937",
+    background: "#020617"
+  },
+
+  tab: {
+    padding: "10px 16px",
+    background: "transparent",
+    border: "none",
+    color: "#9ca3af",
+    cursor: "pointer"
+  },
+
+  tabActive: {
+    padding: "10px 16px",
+    background: "#020617",
+    borderBottom: "2px solid #2563eb",
+    color: "#fff",
+    cursor: "pointer"
+  },
+
+  editor: {
+    flex: 1,
+    background: "#020617"
+  },
+
+  preview: {
+    padding: "20px"
+  }
+};
